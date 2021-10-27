@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Discussions.Migrations
 {
     [DbContext(typeof(DiscussionsContext))]
-    [Migration("20211026175821_Initial_Migration")]
-    partial class Initial_Migration
+    [Migration("20211027210401_Update1")]
+    partial class Update1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -86,6 +86,83 @@ namespace Discussions.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("Discussions.Models.AbonnementCommunaute", b =>
+                {
+                    b.Property<string>("DiscussionsUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CommunauteId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("DiscussionsUserId", "CommunauteId");
+
+                    b.HasIndex("CommunauteId");
+
+                    b.ToTable("Abonnements");
+                });
+
+            modelBuilder.Entity("Discussions.Models.Communaute", b =>
+                {
+                    b.Property<int>("CommunauteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CommunauteId");
+
+                    b.ToTable("Communautes");
+
+                    b.HasData(
+                        new
+                        {
+                            CommunauteId = 1,
+                            CreationDate = new DateTime(2021, 10, 27, 21, 4, 1, 291, DateTimeKind.Utc).AddTicks(8566),
+                            Name = "Accueil"
+                        },
+                        new
+                        {
+                            CommunauteId = 2,
+                            CreationDate = new DateTime(2021, 10, 27, 21, 4, 1, 291, DateTimeKind.Utc).AddTicks(8839),
+                            Name = "Toulouse"
+                        },
+                        new
+                        {
+                            CommunauteId = 3,
+                            CreationDate = new DateTime(2021, 10, 27, 21, 4, 1, 291, DateTimeKind.Utc).AddTicks(8841),
+                            Name = "Sports"
+                        });
+                });
+
+            modelBuilder.Entity("Discussions.Models.Message", b =>
+                {
+                    b.Property<int>("MessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DiscussionsUserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("MessageId");
+
+                    b.HasIndex("DiscussionsUserId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -216,6 +293,58 @@ namespace Discussions.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Discussions.Models.Fil", b =>
+                {
+                    b.HasBaseType("Discussions.Models.Message");
+
+                    b.Property<int>("CommunauteId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasIndex("CommunauteId");
+
+                    b.ToTable("Fils");
+                });
+
+            modelBuilder.Entity("Discussions.Models.Reponse", b =>
+                {
+                    b.HasBaseType("Discussions.Models.Message");
+
+                    b.Property<int>("MessageOrigineId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasIndex("MessageOrigineId");
+
+                    b.ToTable("Reponses");
+                });
+
+            modelBuilder.Entity("Discussions.Models.AbonnementCommunaute", b =>
+                {
+                    b.HasOne("Discussions.Models.Communaute", "Communaute")
+                        .WithMany("Abonnes")
+                        .HasForeignKey("CommunauteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Discussions.Areas.Identity.Data.DiscussionsUser", "DiscussionsUser")
+                        .WithMany()
+                        .HasForeignKey("DiscussionsUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Communaute");
+
+                    b.Navigation("DiscussionsUser");
+                });
+
+            modelBuilder.Entity("Discussions.Models.Message", b =>
+                {
+                    b.HasOne("Discussions.Areas.Identity.Data.DiscussionsUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("DiscussionsUserId");
+
+                    b.Navigation("Author");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -265,6 +394,52 @@ namespace Discussions.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Discussions.Models.Fil", b =>
+                {
+                    b.HasOne("Discussions.Models.Communaute", "Communaute")
+                        .WithMany("Fils")
+                        .HasForeignKey("CommunauteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Discussions.Models.Message", null)
+                        .WithOne()
+                        .HasForeignKey("Discussions.Models.Fil", "MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Communaute");
+                });
+
+            modelBuilder.Entity("Discussions.Models.Reponse", b =>
+                {
+                    b.HasOne("Discussions.Models.Message", null)
+                        .WithOne()
+                        .HasForeignKey("Discussions.Models.Reponse", "MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Discussions.Models.Message", "MessageOrigine")
+                        .WithMany("Reponse")
+                        .HasForeignKey("MessageOrigineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MessageOrigine");
+                });
+
+            modelBuilder.Entity("Discussions.Models.Communaute", b =>
+                {
+                    b.Navigation("Abonnes");
+
+                    b.Navigation("Fils");
+                });
+
+            modelBuilder.Entity("Discussions.Models.Message", b =>
+                {
+                    b.Navigation("Reponse");
                 });
 #pragma warning restore 612, 618
         }

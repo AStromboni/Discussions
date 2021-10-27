@@ -1,12 +1,15 @@
+using Discussions.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Discussions
 {
@@ -22,7 +25,27 @@ namespace Discussions
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
+            services.AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
+            
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                List<CultureInfo> supportedCultures = new List<CultureInfo>
+    {
+        new CultureInfo("en-US"),
+        new CultureInfo("fr-FR"),
+        new CultureInfo("en-GB")
+    };
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
             services.AddRazorPages();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,9 +67,18 @@ namespace Discussions
             app.UseAuthentication();
             app.UseAuthorization();
 
+            var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(options.Value);
+
             app.UseEndpoints(endpoints =>
             {
+                
+
                 endpoints.MapRazorPages();
+
+                endpoints.MapControllerRoute(
+                    name: "Communaute",
+                    pattern: "Communaute/{action=Index}/{id?}");
             });
         }
     }

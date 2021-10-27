@@ -1,0 +1,31 @@
+﻿@model Discussions.Models.Fil
+
+<h4>Fil</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="View">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CommunauteId" class="control-label"></label>
+                <input asp-for="CommunauteId" class="form-control" />
+                <span asp-validation-for="CommunauteId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <input asp-for="Content" class="form-control" />
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedOn" class="control-label"></label>
+                <input asp-for="CreatedOn" class="form-control" />
+                <span asp-validation-for="CreatedOn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+

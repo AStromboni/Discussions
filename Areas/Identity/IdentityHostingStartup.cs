@@ -1,9 +1,8 @@
-﻿using System;
-using Discussions.Areas.Identity.Data;
+﻿using Discussions.Areas.Identity.Data;
 using Discussions.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +25,14 @@ namespace Discussions.Areas.Identity
                     .AddDefaultUI()
                     .AddDefaultTokenProviders();
                 services.AddControllersWithViews();
+
+                services.AddAuthorization(options =>
+                {
+                    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build();
+                });
+
             });
         }
     }

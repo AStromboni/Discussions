@@ -1,0 +1,47 @@
+﻿@model Discussions.Models.Communaute
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Communaute</h4>
+    <hr />
+    <dl class="row">
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
+    </dl>
+</div>
+<div>
+    <div>Conversations :</div>
+    @foreach (var item in Model.Fils.OrderByDescending(d=>d.CreatedOn))
+    {
+        <div>
+            <span><strong>
+    @Html.DisplayFor(modelItem => item.Author.UserName)
+</strong>
+            </span>
+            <span>
+                @Html.DisplayFor(modelItem => item.CreatedOn)
+            </span>
+            <div style="white-space:pre-line">
+                @Html.DisplayFor(modelItem => item.Content)
+            </div>
+        </div>
+
+    }
+</div>

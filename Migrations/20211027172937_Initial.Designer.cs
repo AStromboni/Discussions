@@ -3,14 +3,16 @@ using System;
 using Discussions.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Discussions.Migrations
 {
     [DbContext(typeof(DiscussionsContext))]
-    partial class DiscussionsContextModelSnapshot : ModelSnapshot
+    [Migration("20211027172937_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,19 +124,19 @@ namespace Discussions.Migrations
                         new
                         {
                             CommunauteId = 1,
-                            CreationDate = new DateTime(2021, 10, 27, 21, 4, 1, 291, DateTimeKind.Utc).AddTicks(8566),
+                            CreationDate = new DateTime(2021, 10, 27, 17, 29, 37, 643, DateTimeKind.Utc).AddTicks(7683),
                             Name = "Accueil"
                         },
                         new
                         {
                             CommunauteId = 2,
-                            CreationDate = new DateTime(2021, 10, 27, 21, 4, 1, 291, DateTimeKind.Utc).AddTicks(8839),
+                            CreationDate = new DateTime(2021, 10, 27, 17, 29, 37, 643, DateTimeKind.Utc).AddTicks(7951),
                             Name = "Toulouse"
                         },
                         new
                         {
                             CommunauteId = 3,
-                            CreationDate = new DateTime(2021, 10, 27, 21, 4, 1, 291, DateTimeKind.Utc).AddTicks(8841),
+                            CreationDate = new DateTime(2021, 10, 27, 17, 29, 37, 643, DateTimeKind.Utc).AddTicks(7953),
                             Name = "Sports"
                         });
                 });
@@ -397,7 +399,7 @@ namespace Discussions.Migrations
             modelBuilder.Entity("Discussions.Models.Fil", b =>
                 {
                     b.HasOne("Discussions.Models.Communaute", "Communaute")
-                        .WithMany("Fils")
+                        .WithMany()
                         .HasForeignKey("CommunauteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -420,7 +422,7 @@ namespace Discussions.Migrations
                         .IsRequired();
 
                     b.HasOne("Discussions.Models.Message", "MessageOrigine")
-                        .WithMany("Reponse")
+                        .WithMany()
                         .HasForeignKey("MessageOrigineId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -431,13 +433,6 @@ namespace Discussions.Migrations
             modelBuilder.Entity("Discussions.Models.Communaute", b =>
                 {
                     b.Navigation("Abonnes");
-
-                    b.Navigation("Fils");
-                });
-
-            modelBuilder.Entity("Discussions.Models.Message", b =>
-                {
-                    b.Navigation("Reponse");
                 });
 #pragma warning restore 612, 618
         }

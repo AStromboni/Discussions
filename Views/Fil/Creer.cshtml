@@ -1,0 +1,37 @@
+﻿@model Discussions.Models.Fil
+
+<h2>Créer un fil de conversation.</h2>
+<div>
+    Communauté : @ViewBag.Communaute.Name
+</div>
+
+
+@using (Html.BeginForm("Creer", "Fil"))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(e=>e.CommunauteId)
+    <table border="0" cellpadding="2" cellspacing="2">
+        <tr>
+            <td>Texte</td>
+            <td>
+                @Html.TextAreaFor(e => e.Content, 10, 55, null)
+            </td>
+            <td>
+                <span asp-validation-for="Content"></span>
+            </td>
+        </tr>
+
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                <input type="submit" value="Enregistrer" />
+            </td>
+        </tr>
+    </table>
+
+}
+
+
+
+
+
